@@ -247,30 +247,35 @@ public class Display {
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    Iterator<Entity> entityIterator = entities.iterator();
-                    while (entityIterator.hasNext()) {
-                        Entity entity = entityIterator.next();
-                        if (entity != null && entity.getType() == EntityType.ARMOR_STAND) {
-                            PersistentDataContainer persistentData = entity.getPersistentDataContainer();
-                            if (persistentData != null) {
-                                try {
-                                    int dataDisplay = persistentData.get(new NamespacedKey(Shop.getPlugin(), "display_nametag"), PersistentDataType.INTEGER);
-                                    if (dataDisplay == 1) {
-                                        entityIterator.remove();
-                                        entity.remove();
-                                    }
-                                } catch (NullPointerException e) {
-                                }
-                            }
-                        }
-                    }
-                    nameTagsVisible = false;
+                    removeTagEntities();
                 }
             }.runTaskLater(Shop.getPlugin(), (Shop.getPlugin().getDisplayTagLifespan() * 20));
         } catch (NullPointerException e){
             e.printStackTrace();
         }
     }
+
+    public void removeTagEntities() {
+        Iterator<Entity> entityIterator = entities.iterator();
+        while (entityIterator.hasNext()) {
+            Entity entity = entityIterator.next();
+            if (entity != null && entity.getType() == EntityType.ARMOR_STAND) {
+                PersistentDataContainer persistentData = entity.getPersistentDataContainer();
+                if (persistentData != null) {
+                    try {
+                        int dataDisplay = persistentData.get(new NamespacedKey(Shop.getPlugin(), "display_nametag"), PersistentDataType.INTEGER);
+                        if (dataDisplay == 1) {
+                            entityIterator.remove();
+                            entity.remove();
+                        }
+                    } catch (NullPointerException e) {
+                    }
+                }
+            }
+        }
+        nameTagsVisible = false;
+    }
+
 
     private void createTagEntity(String text, Location location){
         ArmorStand as = (ArmorStand) location.getWorld().spawnEntity(location, EntityType.ARMOR_STAND); //Spawn the ArmorStand

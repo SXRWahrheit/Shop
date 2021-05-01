@@ -149,6 +149,13 @@ public class InventoryUtils {
                 return itemStack1.isSimilar(itemStack2);
             }
         }
+        //fix NBT attributes for cached older items to be compatible with Spigot serializer updates
+        if (i1Meta != null && i2Meta != null && i1Meta.hasAttributeModifiers() && i2Meta.hasAttributeModifiers()) {
+            i1Meta.setAttributeModifiers(i1Meta.getAttributeModifiers());
+            i2Meta.setAttributeModifiers(i2Meta.getAttributeModifiers());
+            i1.setItemMeta(i1Meta);
+            i2.setItemMeta(i2Meta);
+        }
 
         return i1.isSimilar(i2);
     }

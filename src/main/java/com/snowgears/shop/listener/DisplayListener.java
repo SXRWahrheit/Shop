@@ -41,18 +41,30 @@ public class DisplayListener implements Listener {
     public Shop plugin = Shop.getPlugin();
     private ArrayList<ItemStack> allServerRecipeResults = new ArrayList<>();
 
+    // Create list of viewed shops to remove armor stands on 15 tick loop rather than at expiry if player is no longer viewing sign
+    private ArrayList<AbstractShop> viewedShops = new ArrayList<>();
+
     public void startRepeatingDisplayViewTask(){
         if(plugin.displayNameTags() == DisplayTagOption.VIEW_SIGN){
             //run task every 15 ticks
             Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
+                ArrayList<AbstractShop> nonViewedShops = new ArrayList<>(viewedShops);
                 for(Player player : plugin.getServer().getOnlinePlayers()){
                     Block block = player.getTargetBlock(null, 8);
                     if(block.getBlockData() instanceof WallSign){
                         AbstractShop shopObj = plugin.getShopHandler().getShop(block.getLocation());
                         if(shopObj != null){
                             shopObj.getDisplay().showNameTags();
+                            nonViewedShops.remove(shopObj);
+                            if (!viewedShops.contains(shopObj)) {
+                                viewedShops.add(shopObj);
+                            }
                         }
                     }
+                }
+                for (AbstractShop shop : nonViewedShops) {
+                    viewedShops.remove(shop);
+                    shop.getDisplay().removeTagEntities();
                 }
             }, 0, 15);
         }
