@@ -268,9 +268,9 @@ public class Shop extends JavaPlugin {
 
         if (useVault) {
             if (!setupEconomy()) {
-                log.severe("[Shop] PLUGIN DISABLED DUE TO NO VAULT DEPENDENCY FOUND ON SERVER!");
+                log.severe("[Shop] Vault implementation not detected at startup! Currency may not work properly!");
                 log.info("[Shop] If you do not wish to use Vault with Shop, make sure to set 'useVault' in the config file to false.");
-                getServer().getPluginManager().disablePlugin(plugin);
+                // getServer().getPluginManager().disablePlugin(plugin);
                 return;
             } else {
                 log.info("[Shop] Vault dependency found. Using the Vault economy (" + vaultCurrencySymbol + ") for currency on the server.");
