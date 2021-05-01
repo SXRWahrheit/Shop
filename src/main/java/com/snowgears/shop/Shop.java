@@ -155,6 +155,11 @@ public class Shop extends JavaPlugin {
 
         try {
             displayNameTagsLifespan = config.getInt("displayNameTagsLifespan");
+            // Catch missing or negative config entry and default to 10
+            if (displayNameTagsLifespan <= 0) {
+                displayNameTagsLifespan = 10;
+            }
+        // This exception will only occur if text is entered in the config
         } catch (Exception e){ displayNameTagsLifespan = 10; }
 
         try {
